@@ -34,16 +34,49 @@ public abstract class AbstractKafkaProducer<K,V> implements InitializingBean {
     }
 
     /**
-     * Отправляет сообщение в kafka.
+     * Отправляет указанное значение в Kafka.
+     *
+     * @param value значение
+     * @return {@link CompletableFuture} для {@link SendResult}
+     */
+    public CompletableFuture<SendResult<K,V>> send(V value) {
+        return kafkaTemplate.sendDefault(value);
+    }
+
+    /**
+     * Отправляет ключ и значение в Kafka.
      *
      * @param key ключ
      * @param value значение
-     * @return результат отправки сообщения
-     *
-     * @see KafkaTemplate#sendDefault
+     * @return {@link CompletableFuture} для {@link SendResult}
      */
     public CompletableFuture<SendResult<K,V>> send(K key, V value) {
         return kafkaTemplate.sendDefault(key, value);
+    }
+
+    /**
+     * Отправляет указанное значение в Kafka с partition и ключом.
+     *
+     * @param partition partition
+     * @param key ключ
+     * @param value значение
+     * @return {@link CompletableFuture} для {@link SendResult}
+     */
+    public CompletableFuture<SendResult<K,V>> send(Integer partition, K key, V value) {
+        return kafkaTemplate.sendDefault(partition, key, value);
+    }
+
+    /**
+     * Отправляет указанное значение в Kafka с partition, ключом и timestamp.
+     *
+     * @param partition partition
+     * @param timestamp timestamp
+     * @param key ключ
+     * @param value значение
+     * @return {@link CompletableFuture} для {@link SendResult}
+     */
+    public CompletableFuture<SendResult<K,V>> send(Integer partition, Long timestamp, K key, V value) {
+        return kafkaTemplate.sendDefault(partition, timestamp, key, value);
     }
 
     /**
