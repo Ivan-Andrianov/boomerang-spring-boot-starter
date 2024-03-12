@@ -4,25 +4,31 @@ import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.support.Acknowledgment;
-import ru.astondevs.kafka.Event;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
-public abstract class AbstractKafkaConsumer<K,V> implements MessageListener<String, Event> {
+/**
+ * Базовый тип для всех потребителей из kafka.
+ *
+ * @see KafkaConsumer
+ * @author Максим Яськов
+ * @param <K> ключ
+ *  * @param <V> значение
+ */
+public abstract class AbstractKafkaConsumer<K,V> implements MessageListener<K,V> {
 
     @Override
-    public abstract void onMessage(ConsumerRecord<String, Event> data);
-
-    @Override
-    public void onMessage(ConsumerRecord<String, Event> data, Acknowledgment acknowledgment) {
+    public void onMessage(@NonNull ConsumerRecord<K,V> data, @Nullable Acknowledgment acknowledgment) {
         MessageListener.super.onMessage(data, acknowledgment);
     }
 
     @Override
-    public void onMessage(ConsumerRecord<String, Event> data, Consumer<?, ?> consumer) {
+    public void onMessage(@NonNull ConsumerRecord<K,V> data, @NonNull Consumer<?,?> consumer) {
         MessageListener.super.onMessage(data, consumer);
     }
 
     @Override
-    public void onMessage(ConsumerRecord<String, Event> data, Acknowledgment acknowledgment, Consumer<?, ?> consumer) {
+    public void onMessage(@NonNull ConsumerRecord<K,V> data, @Nullable Acknowledgment acknowledgment, @NonNull Consumer<?,?> consumer) {
         MessageListener.super.onMessage(data, acknowledgment, consumer);
     }
 }

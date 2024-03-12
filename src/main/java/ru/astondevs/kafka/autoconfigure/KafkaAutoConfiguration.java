@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 @EnableConfigurationProperties(AutoConfigurationKafkaProperties.class)
 public class KafkaAutoConfiguration {
 
-
     @Bean
     public KafkaProducerBeanPostProcessor kafkaProducerBeanPostProcessor(ApplicationContext context, AutoConfigurationKafkaProperties properties) {
         return new KafkaProducerBeanPostProcessor(context, properties);
