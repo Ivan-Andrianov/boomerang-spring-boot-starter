@@ -1,4 +1,4 @@
-package ru.astondevs.kafka.autoconfigure;
+package ru.astondevs.kafka.autoconfigure.consumer;
 
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -6,6 +6,7 @@ import org.springframework.kafka.listener.MessageListener;
 import org.springframework.kafka.support.Acknowledgment;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import ru.astondevs.kafka.autoconfigure.annotation.KafkaConsumer;
 
 /**
  * Базовый тип для всех потребителей из kafka.

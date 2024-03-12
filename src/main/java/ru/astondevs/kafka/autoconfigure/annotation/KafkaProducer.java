@@ -1,6 +1,7 @@
-package ru.astondevs.kafka.autoconfigure;
+package ru.astondevs.kafka.autoconfigure.annotation;
 
 import org.springframework.stereotype.Component;
+import ru.astondevs.kafka.autoconfigure.producer.AbstractKafkaProducer;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

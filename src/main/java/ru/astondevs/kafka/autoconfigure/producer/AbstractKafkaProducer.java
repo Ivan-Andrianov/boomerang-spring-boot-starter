@@ -1,8 +1,9 @@
-package ru.astondevs.kafka.autoconfigure;
+package ru.astondevs.kafka.autoconfigure.producer;
 
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
+import ru.astondevs.kafka.autoconfigure.annotation.KafkaProducer;
 
 import java.util.concurrent.CompletableFuture;
 

@@ -2,8 +2,10 @@ package ru.astondevs.kafka.autoconfigure;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.util.unit.DataSize;
 
@@ -105,24 +107,24 @@ public class KafkaConfigurationProperties {
         private String groupId;
 
         /**
-         * Класс серелизатора ключа.
+         * Класс десерелизатора ключа.
          */
-        private Class<?> keySerializer = StringSerializer.class;
+        private Class<?> keyDeserializer = StringDeserializer.class;
 
         /**
-         * Название компонента являющегося серелизатором ключа.
+         * Название компонента являющегося десерелизатором ключа.
          */
         private String keyDeserializerBeanName;
+
+        /**
+         * Класс десерелизатора значения.
+         */
+        private Class<?> valueDeserializer = JsonDeserializer.class;
 
         /**
          * Название компонента являющегося серелизатором значения.
          */
         private String valueDeserializerBeanName;
-
-        /**
-         * Класс серелизатора значения.
-         */
-        private Class<?> valueSerializer = JsonSerializer.class;
 
     }
 }

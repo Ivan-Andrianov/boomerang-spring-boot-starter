@@ -1,4 +1,4 @@
-package ru.astondevs.kafka.autoconfigure;
+package ru.astondevs.kafka.autoconfigure.consumer;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
@@ -10,11 +10,10 @@ import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.kafka.config.AbstractKafkaListenerContainerFactory;
 import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
-import org.springframework.kafka.core.ConsumerFactory;
-import org.springframework.kafka.core.DefaultKafkaConsumerFactory;
 import org.springframework.kafka.listener.AbstractMessageListenerContainer;
 import org.springframework.lang.NonNull;
-import org.springframework.util.StringUtils;
+import ru.astondevs.kafka.autoconfigure.KafkaConfigurationProperties;
+import ru.astondevs.kafka.autoconfigure.annotation.KafkaConsumer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -73,12 +72,16 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
             throw new BeanNotOfRequiredTypeException(beanName, AbstractKafkaConsumer.class, bean.getClass());
         }
 
+        KafkaConfigurationProperties.ConsumerProperties properties = this.properties.getConsumers().get(kafkaConsumer.value());
+        if (properties == null) {
+            throw new IllegalStateException("Consumer's properties is null");
+        }
+
         beanNameConfigurationMap.put(beanName, kafkaConsumer.value());
 
-        KafkaConfigurationProperties.ConsumerProperties consumerProperties = properties.getConsumers().get(kafkaConsumer.value());
         AbstractKafkaListenerContainerFactory<?, ?, ?> containerFactory = configurationContainerFactoryMap.get(kafkaConsumer.value());
         if (containerFactory == null) {
-            containerFactory = createContainerFactory(beanFactory, consumerProperties);
+            containerFactory = createContainerFactory(beanFactory, properties);
             configurationContainerFactoryMap.put(kafkaConsumer.value(), containerFactory);
         }
 
@@ -92,11 +95,11 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
             return bean;
         }
 
-        KafkaConfigurationProperties.ConsumerProperties consumerProperties = properties.getConsumers().get(configuration);
+        KafkaConfigurationProperties.ConsumerProperties properties = this.properties.getConsumers().get(configuration);
         AbstractKafkaListenerContainerFactory<?, ?, ?> containerFactory = configurationContainerFactoryMap.get(configuration);
 
-        AbstractMessageListenerContainer<?,?> container = containerFactory.createContainer(consumerProperties.getTopic());
-        container.getContainerProperties().setGroupId(consumerProperties.getGroupId());
+        AbstractMessageListenerContainer<?,?> container = containerFactory.createContainer(properties.getTopic());
+        container.getContainerProperties().setGroupId(properties.getGroupId());
         container.getContainerProperties().setMessageListener(bean);
         container.start();
 
@@ -108,43 +111,35 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
      * Создает {@link AbstractKafkaListenerContainerFactory} используя конфигурацию потребителя.
      *
      * @param beanFactory фабрика компонентов
-     * @param consumerProperties конфигурация потребителя
+     * @param properties конфигурация потребителя
      * @return {@link AbstractKafkaListenerContainerFactory} соответствующую конфигурации
      */
     private AbstractKafkaListenerContainerFactory<?, ?, ?> createContainerFactory(
-            ConfigurableListableBeanFactory beanFactory, KafkaConfigurationProperties.ConsumerProperties consumerProperties) {
-        AbstractKafkaListenerContainerFactory<?,?,?> factory = new ConcurrentKafkaListenerContainerFactory<>();
+            ConfigurableListableBeanFactory beanFactory, KafkaConfigurationProperties.ConsumerProperties properties) {
+        AbstractKafkaListenerContainerFactory factory = new ConcurrentKafkaListenerContainerFactory<>();
+        ConsumerFactoryBuilder consumerFactoryBuilder = ConsumerFactoryBuilder.of(properties);
 
-        ConsumerFactory consumerFactory = createConsumerFactory(beanFactory, consumerProperties);
-        factory.setConsumerFactory(consumerFactory);
-
-        return factory;
-    }
-
-    /**
-     * Создает {@link ConsumerFactory} используя конфигурацию потребителя.
-     *
-     * @param beanFactory фабрика компонентов
-     * @param consumerProperties конфигурация потребителя
-     * @return {@link ConsumerFactory} соответствующую конфигурации
-     */
-    private <K,V> ConsumerFactory<K, V> createConsumerFactory(ConfigurableListableBeanFactory beanFactory, KafkaConfigurationProperties.ConsumerProperties consumerProperties) {
-        Map<String, Object> consumerConfigProperties = new HashMap<>(Map.of(
-                ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, StringUtils.collectionToCommaDelimitedString(consumerProperties.getBootstrapServers()),
-                ConsumerConfig.GROUP_ID_CONFIG, consumerProperties.getGroupId()));
-
-        String keyDeserializerBeanName = consumerProperties.getKeyDeserializerBeanName();
-        String valueDeserializerBeanName = consumerProperties.getValueDeserializerBeanName();
-
-        boolean useDeserializerImpl = keyDeserializerBeanName != null || valueDeserializerBeanName != null;
-        if (useDeserializerImpl) {
-            Deserializer keyDeserializer = keyDeserializerBeanName == null ? null : (Deserializer<?>) beanFactory.getBean(keyDeserializerBeanName);
-            Deserializer valueDeserializer = valueDeserializerBeanName == null ? null : (Deserializer<?>) beanFactory.getBean(valueDeserializerBeanName);
-            return new DefaultKafkaConsumerFactory<>(consumerConfigProperties, keyDeserializer, valueDeserializer);
-        } else {
-            consumerConfigProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG, consumerProperties.getKeySerializer());
-            consumerConfigProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG, consumerProperties.getValueSerializer());
-            return new DefaultKafkaConsumerFactory<>(consumerConfigProperties);
+        boolean configureKeyDeserializer = true;
+        String keyDeserializerBeanName = properties.getKeyDeserializerBeanName();
+        if (keyDeserializerBeanName != null) {
+            Deserializer<?> keyDeserializer = (Deserializer<?>) beanFactory.getBean(keyDeserializerBeanName);
+            consumerFactoryBuilder.keyDeserializer(keyDeserializer);
+            consumerFactoryBuilder.config(config -> config.remove(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG));
+            configureKeyDeserializer = false;
         }
+
+        boolean configureValueDeserializer = true;
+        String valueDeserializerBeanName = properties.getValueDeserializerBeanName();
+        if (valueDeserializerBeanName != null) {
+            Deserializer<?> valueDeserializer = (Deserializer<?>) beanFactory.getBean(valueDeserializerBeanName);
+            consumerFactoryBuilder.valueDeserializer(valueDeserializer);
+            consumerFactoryBuilder.config(config -> config.remove(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG));
+            configureValueDeserializer = false;
+        }
+
+        consumerFactoryBuilder.configureDeserializers(configureKeyDeserializer || configureValueDeserializer);
+
+        factory.setConsumerFactory(consumerFactoryBuilder.build());
+        return factory;
     }
 }
