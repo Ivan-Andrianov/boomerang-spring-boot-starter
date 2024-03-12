@@ -15,7 +15,7 @@ public class ProducerFactoryFactory {
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, producerProperties.getBootstrapServers().stream().collect(Collectors.joining(",")),
                 ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, producerProperties.getKeySerializer(),
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, producerProperties.getValueSerializer(),
-                ProducerConfig.BATCH_SIZE_CONFIG, producerProperties.getBatchSize(),
+                ProducerConfig.BATCH_SIZE_CONFIG, (int) producerProperties.getBatchSize().toBytes(),
                 ProducerConfig.LINGER_MS_CONFIG, producerProperties.getLingerMs()
         ));
     }

@@ -4,8 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Import;
 import org.springframework.kafka.support.serializer.JsonSerializer;
+import org.springframework.stereotype.Component;
 import org.springframework.util.unit.DataSize;
 
 import java.util.List;
@@ -17,6 +20,8 @@ import java.util.Map;
 public class AutoConfigurationKafkaProperties {
 
     private Map<String, ProducerProperties> producers;
+
+    private Map<String, ConsumerProperties> consumers; // by groupId
 
     @Getter
     @Setter

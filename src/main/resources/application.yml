@@ -1,7 +1,0 @@
-ru.astondevs.kafka:
-  produces:
-    topic-producer: # название продюсера в @KafkaProducer
-      topic: 'topic-name'
-      bootstrap-servers: 'localhost:29092' # comma-delimiter
-      batch-size: 2Kb
-
