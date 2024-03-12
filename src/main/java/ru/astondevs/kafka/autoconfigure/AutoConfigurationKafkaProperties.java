@@ -36,5 +36,29 @@ public class AutoConfigurationKafkaProperties {
 
     }
 
+    @Getter
+    @Setter
+    public static class ConsumerProperties {
+
+        private String topic;
+
+        private String groupId;
+
+        private DataSize batchSize = DataSize.ofKilobytes(16);
+
+        private long lingerMs = 0;
+
+        private List<String> bootstrapServers;
+
+        private Class<?> keySerializer = StringSerializer.class;
+
+        private Class<?> valueSerializer = JsonSerializer.class;
+
+        private String keySerializerName;
+
+        private String valueSerializerName;
+
+    }
+
 
 }
