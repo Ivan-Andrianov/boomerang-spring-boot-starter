@@ -10,11 +10,13 @@ import org.springframework.lang.Nullable;
 /**
  * Базовый тип для всех потребителей из kafka.
  *
- * @see KafkaConsumer
- * @author Максим Яськов
+ * @author Ivan Andrianov
+ * @author Maksim Yaskov
  *
  * @param <K> ключ
  * @param <V> значение
+ *
+ * @see KafkaConsumer
  */
 public abstract class AbstractKafkaConsumer<K,V> implements MessageListener<K,V> {
 

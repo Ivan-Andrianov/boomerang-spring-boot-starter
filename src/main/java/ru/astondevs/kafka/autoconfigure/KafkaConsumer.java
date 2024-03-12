@@ -11,7 +11,8 @@ import java.lang.annotation.Target;
  * Аннотация, которая помечает bean, как потребителя сообщений из kafka.
  * Тип bean'а помеченного данной аннотацией должен расширять {@link AbstractKafkaConsumer}.
  *
- * @author Максим Яськов
+ * @author Ivan Andrianov
+ * @author Maksim Yaskov
  */
 @Component
 @Retention(RetentionPolicy.RUNTIME)

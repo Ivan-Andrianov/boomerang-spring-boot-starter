@@ -9,11 +9,13 @@ import java.util.concurrent.CompletableFuture;
 /**
  * Базовый тип для всех продюсеров в kafka.
  *
- * @see KafkaConsumer
- * @author Максим Яськов
+ * @author Ivan Andrianov
+ * @author Maksim Yaskov
  *
  * @param <K> ключ
  * @param <V> значение
+ *
+ * @see KafkaProducer
  */
 public abstract class AbstractKafkaProducer<K,V> implements InitializingBean {
 

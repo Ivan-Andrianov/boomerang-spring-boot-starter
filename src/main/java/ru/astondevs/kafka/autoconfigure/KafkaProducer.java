@@ -11,7 +11,8 @@ import java.lang.annotation.Target;
  * Аннотация, которая помечает bean, как продюсера сообщений в kafka.
  * Тип bean'а помеченного данной аннотацией должен расширять {@link AbstractKafkaProducer}.
  *
- * @author Максим Яськов
+ * @author Ivan Andrianov
+ * @author Maksim Yaskov
  */
 @Component
 @Target(ElementType.TYPE)
