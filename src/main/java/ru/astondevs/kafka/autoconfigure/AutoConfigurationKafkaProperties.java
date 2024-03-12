@@ -2,13 +2,9 @@ package ru.astondevs.kafka.autoconfigure;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
-import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Import;
 import org.springframework.kafka.support.serializer.JsonSerializer;
-import org.springframework.stereotype.Component;
 import org.springframework.util.unit.DataSize;
 
 import java.util.List;
@@ -59,9 +55,9 @@ public class AutoConfigurationKafkaProperties {
 
         private Class<?> valueSerializer = JsonSerializer.class;
 
-        private String keySerializerName;
+        private String keyDeserializerBeanName;
 
-        private String valueSerializerName;
+        private String valueDeserializerBeanName;
 
     }
 
