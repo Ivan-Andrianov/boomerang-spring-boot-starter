@@ -12,8 +12,9 @@ import org.springframework.lang.Nullable;
  *
  * @see KafkaConsumer
  * @author Максим Яськов
+ *
  * @param <K> ключ
- *  * @param <V> значение
+ * @param <V> значение
  */
 public abstract class AbstractKafkaConsumer<K,V> implements MessageListener<K,V> {
 

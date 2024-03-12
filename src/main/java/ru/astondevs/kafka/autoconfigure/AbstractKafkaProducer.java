@@ -1,13 +1,21 @@
 package ru.astondevs.kafka.autoconfigure;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 
 import java.util.concurrent.CompletableFuture;
 
-@RequiredArgsConstructor
-public abstract class AbstractKafkaProducer<K,V> {
+/**
+ * Базовый тип для всех продюсеров в kafka.
+ *
+ * @see KafkaConsumer
+ * @author Максим Яськов
+ *
+ * @param <K> ключ
+ * @param <V> значение
+ */
+public abstract class AbstractKafkaProducer<K,V> implements InitializingBean {
 
     private KafkaTemplate<K,V> kafkaTemplate;
 
@@ -23,4 +31,10 @@ public abstract class AbstractKafkaProducer<K,V> {
         this.kafkaTemplate = kafkaTemplate;
     }
 
+    @Override
+    public void afterPropertiesSet() throws Exception {
+        if (kafkaTemplate == null) {
+            throw new IllegalStateException("kafkaTemplate must not be null");
+        }
+    }
 }
