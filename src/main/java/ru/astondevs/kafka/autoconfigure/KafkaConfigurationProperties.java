@@ -19,7 +19,7 @@ import java.util.Map;
 @Getter
 @Setter
 @ConfigurationProperties(prefix = "ru.astondevs.kafka")
-public class AutoConfigurationKafkaProperties {
+public class KafkaConfigurationProperties {
 
     /**
      * Карта названия конфигурации продюсера и свойства конфигурации продюсера.

@@ -14,14 +14,14 @@ import org.springframework.context.annotation.Bean;
  * @author Maksim Yaskov
  */
 @AutoConfiguration
-@EnableConfigurationProperties(AutoConfigurationKafkaProperties.class)
+@EnableConfigurationProperties(KafkaConfigurationProperties.class)
 public class KafkaAutoConfiguration {
 
     /**
      * {@link BeanPostProcessor} отвечающий за конфигурацию {@link KafkaProducer} компонентов.
      */
     @Bean
-    public KafkaProducerBeanPostProcessor kafkaProducerBeanPostProcessor(ApplicationContext context, AutoConfigurationKafkaProperties properties) {
+    public KafkaProducerBeanPostProcessor kafkaProducerBeanPostProcessor(ApplicationContext context, KafkaConfigurationProperties properties) {
         return new KafkaProducerBeanPostProcessor(context, properties);
     }
 
@@ -29,7 +29,7 @@ public class KafkaAutoConfiguration {
      * {@link BeanPostProcessor} отвечающий за конфигурацию {@link KafkaConsumer} компонентов.
      */
     @Bean
-    public KafkaConsumerBeanPostProcessor kafkaListenerBeanPostProcessor(ConfigurableListableBeanFactory factory, AutoConfigurationKafkaProperties properties) {
+    public KafkaConsumerBeanPostProcessor kafkaListenerBeanPostProcessor(ConfigurableListableBeanFactory factory, KafkaConfigurationProperties properties) {
         return new KafkaConsumerBeanPostProcessor(factory, properties);
     }
 

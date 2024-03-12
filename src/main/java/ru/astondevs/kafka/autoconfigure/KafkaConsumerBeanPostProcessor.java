@@ -54,7 +54,7 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
     /**
      * Свойства конфигураций.
      */
-    private final AutoConfigurationKafkaProperties properties;
+    private final KafkaConfigurationProperties properties;
 
     @Override
     public void destroy() {
@@ -75,7 +75,7 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
 
         beanNameConfigurationMap.put(beanName, kafkaConsumer.value());
 
-        AutoConfigurationKafkaProperties.ConsumerProperties consumerProperties = properties.getConsumers().get(kafkaConsumer.value());
+        KafkaConfigurationProperties.ConsumerProperties consumerProperties = properties.getConsumers().get(kafkaConsumer.value());
         AbstractKafkaListenerContainerFactory<?, ?, ?> containerFactory = configurationContainerFactoryMap.get(kafkaConsumer.value());
         if (containerFactory == null) {
             containerFactory = createContainerFactory(beanFactory, consumerProperties);
@@ -92,7 +92,7 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
             return bean;
         }
 
-        AutoConfigurationKafkaProperties.ConsumerProperties consumerProperties = properties.getConsumers().get(configuration);
+        KafkaConfigurationProperties.ConsumerProperties consumerProperties = properties.getConsumers().get(configuration);
         AbstractKafkaListenerContainerFactory<?, ?, ?> containerFactory = configurationContainerFactoryMap.get(configuration);
 
         AbstractMessageListenerContainer<?,?> container = containerFactory.createContainer(consumerProperties.getTopic());
@@ -112,7 +112,7 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
      * @return {@link AbstractKafkaListenerContainerFactory} соответствующую конфигурации
      */
     private AbstractKafkaListenerContainerFactory<?, ?, ?> createContainerFactory(
-            ConfigurableListableBeanFactory beanFactory, AutoConfigurationKafkaProperties.ConsumerProperties consumerProperties) {
+            ConfigurableListableBeanFactory beanFactory, KafkaConfigurationProperties.ConsumerProperties consumerProperties) {
         AbstractKafkaListenerContainerFactory<?,?,?> factory = new ConcurrentKafkaListenerContainerFactory<>();
 
         ConsumerFactory consumerFactory = createConsumerFactory(beanFactory, consumerProperties);
@@ -128,7 +128,7 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
      * @param consumerProperties конфигурация потребителя
      * @return {@link ConsumerFactory} соответствующую конфигурации
      */
-    private <K,V> ConsumerFactory<K, V> createConsumerFactory(ConfigurableListableBeanFactory beanFactory, AutoConfigurationKafkaProperties.ConsumerProperties consumerProperties) {
+    private <K,V> ConsumerFactory<K, V> createConsumerFactory(ConfigurableListableBeanFactory beanFactory, KafkaConfigurationProperties.ConsumerProperties consumerProperties) {
         Map<String, Object> consumerConfigProperties = new HashMap<>(Map.of(
                 ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, StringUtils.collectionToCommaDelimitedString(consumerProperties.getBootstrapServers()),
                 ConsumerConfig.GROUP_ID_CONFIG, consumerProperties.getGroupId()));

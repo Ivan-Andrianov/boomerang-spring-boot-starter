@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 
 public class ProducerFactoryFactory {
 
-    public static ProducerFactory createProducerFactory(AutoConfigurationKafkaProperties.ProducerProperties producerProperties) {
+    public static ProducerFactory createProducerFactory(KafkaConfigurationProperties.ProducerProperties producerProperties) {
 
         return new DefaultKafkaProducerFactory<>(Map.of(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, producerProperties.getBootstrapServers().stream().collect(Collectors.joining(",")),

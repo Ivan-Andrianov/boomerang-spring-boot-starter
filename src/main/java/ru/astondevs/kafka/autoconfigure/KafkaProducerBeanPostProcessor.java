@@ -13,7 +13,7 @@ public class KafkaProducerBeanPostProcessor implements BeanPostProcessor {
 
     private final ApplicationContext context;
 
-    private final AutoConfigurationKafkaProperties properties;
+    private final KafkaConfigurationProperties properties;
 
     @Override
     public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
