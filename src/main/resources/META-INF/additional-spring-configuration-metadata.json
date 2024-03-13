@@ -1,0 +1,17 @@
+{
+  "groups": [
+    {
+      "name": "ru.astondevs.kafka",
+      "type": "ru.astondevs.kafka.autoconfigure.KafkaConfigurationProperties"
+    }
+  ],
+  "properties": [
+    {
+      "name": "ru.astondevs.kafka.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Включить авто-конфигурацию Kafka.",
+      "defaultValue": "true"
+    }
+  ],
+  "hints": []
+}
