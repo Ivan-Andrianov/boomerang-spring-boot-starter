@@ -30,7 +30,7 @@ ru.astondevs.kafka:
 
 Пример определения компонента продюсера:
 ```java
-@KafkaProducer("some-topic-producer") // название конфигурации в пропертях
+@KafkaProducer(config = "some-topic-producer") // название конфигурации в пропертях
 public class SomeTopicKafkaProducer extends AbstractKafkaProducer<String, Event> {
 
 }
@@ -56,7 +56,7 @@ public class KafkaRunner implements CommandLineRunner {
 
 Пример определения компонента потребителя:
 ```java
-@KafkaConsumer("some-topic-consumer") // название конфигурации в пропертях
+@KafkaConsumer(config = "some-topic-consumer") // название конфигурации в пропертях
 public class SomeTopicConsumerListener extends AbstractKafkaConsumer<String, Event> {
 
     @Override
