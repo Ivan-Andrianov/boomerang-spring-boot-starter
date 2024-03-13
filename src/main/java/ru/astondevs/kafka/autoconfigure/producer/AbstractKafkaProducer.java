@@ -1,6 +1,5 @@
 package ru.astondevs.kafka.autoconfigure.producer;
 
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.support.SendResult;
 import ru.astondevs.kafka.autoconfigure.annotation.KafkaProducer;
@@ -18,20 +17,13 @@ import java.util.concurrent.CompletableFuture;
  *
  * @see KafkaProducer
  */
-public abstract class AbstractKafkaProducer<K,V> implements InitializingBean {
+public abstract class AbstractKafkaProducer<K,V> {
 
     /**
      * Экземпляр KafkaTemplate специально созданный для продюсера.
      * В этот экземпляр установлен топик по умолчанию.
      */
     private KafkaTemplate<K,V> kafkaTemplate;
-
-    @Override
-    public void afterPropertiesSet() throws Exception {
-        if (kafkaTemplate == null) {
-            throw new IllegalStateException("kafkaTemplate must not be null");
-        }
-    }
 
     /**
      * Отправляет указанное значение в Kafka.
