@@ -1,5 +1,6 @@
-package ru.astondevs.kafka.autoconfigure.annotation;
+package ru.astondevs.kafka.autoconfigure.producer;
 
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
 import ru.astondevs.kafka.autoconfigure.producer.AbstractKafkaProducer;
 
@@ -21,8 +22,14 @@ import java.lang.annotation.Target;
 public @interface KafkaProducer {
 
     /**
+     * @return название компонента
+     */
+    @AliasFor(attribute = "value", annotation = Component.class)
+    String value() default "";
+
+    /**
      * @return название конфигурации для данного продюсера
      */
-    String value() default "";
+    String config();
 
 }

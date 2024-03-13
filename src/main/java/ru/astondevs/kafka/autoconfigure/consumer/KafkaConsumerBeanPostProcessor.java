@@ -13,7 +13,6 @@ import org.springframework.kafka.config.ConcurrentKafkaListenerContainerFactory;
 import org.springframework.kafka.listener.AbstractMessageListenerContainer;
 import org.springframework.lang.NonNull;
 import ru.astondevs.kafka.autoconfigure.KafkaConfigurationProperties;
-import ru.astondevs.kafka.autoconfigure.annotation.KafkaConsumer;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,12 +32,12 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
     /**
      * Карта названия конфигурации и AbstractKafkaListenerContainerFactory.
      */
-    private final Map<String, AbstractKafkaListenerContainerFactory<?,?,?>> configurationContainerFactoryMap = new HashMap<>();
+    private final Map<String, AbstractKafkaListenerContainerFactory<?,?,?>> configContainerFactoryMap = new HashMap<>();
 
     /**
      * Карта beanName и названия конфигурации.
      */
-    private final Map<String, String> beanNameConfigurationMap = new HashMap<>();
+    private final Map<String, String> beanNameConfigMap = new HashMap<>();
 
     /**
      * Карта beanName и AbstractMessageListenerContainer.
@@ -72,17 +71,18 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
             throw new BeanNotOfRequiredTypeException(beanName, AbstractKafkaConsumer.class, bean.getClass());
         }
 
-        KafkaConfigurationProperties.ConsumerProperties properties = this.properties.getConsumers().get(kafkaConsumer.value());
+        String configName = kafkaConsumer.config();
+        KafkaConfigurationProperties.ConsumerProperties properties = this.properties.getConsumers().get(configName);
         if (properties == null) {
             throw new IllegalStateException("Consumer's properties is null");
         }
 
-        beanNameConfigurationMap.put(beanName, kafkaConsumer.value());
+        beanNameConfigMap.put(beanName, configName);
 
-        AbstractKafkaListenerContainerFactory<?, ?, ?> containerFactory = configurationContainerFactoryMap.get(kafkaConsumer.value());
+        AbstractKafkaListenerContainerFactory<?, ?, ?> containerFactory = configContainerFactoryMap.get(configName);
         if (containerFactory == null) {
             containerFactory = createContainerFactory(beanFactory, properties);
-            configurationContainerFactoryMap.put(kafkaConsumer.value(), containerFactory);
+            configContainerFactoryMap.put(configName, containerFactory);
         }
 
         return bean;
@@ -90,13 +90,13 @@ public class KafkaConsumerBeanPostProcessor implements BeanPostProcessor, Dispos
 
     @Override
     public Object postProcessAfterInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
-        String configuration = beanNameConfigurationMap.get(beanName);
-        if (configuration == null) {
+        String configName = beanNameConfigMap.get(beanName);
+        if (configName == null) {
             return bean;
         }
 
-        KafkaConfigurationProperties.ConsumerProperties properties = this.properties.getConsumers().get(configuration);
-        AbstractKafkaListenerContainerFactory<?, ?, ?> containerFactory = configurationContainerFactoryMap.get(configuration);
+        KafkaConfigurationProperties.ConsumerProperties properties = this.properties.getConsumers().get(configName);
+        AbstractKafkaListenerContainerFactory<?, ?, ?> containerFactory = configContainerFactoryMap.get(configName);
 
         AbstractMessageListenerContainer<?,?> container = containerFactory.createContainer(properties.getTopic());
         container.getContainerProperties().setGroupId(properties.getGroupId());

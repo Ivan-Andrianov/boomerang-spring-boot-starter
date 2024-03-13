@@ -1,5 +1,6 @@
-package ru.astondevs.kafka.autoconfigure.annotation;
+package ru.astondevs.kafka.autoconfigure.consumer;
 
+import org.springframework.core.annotation.AliasFor;
 import org.springframework.stereotype.Component;
 import ru.astondevs.kafka.autoconfigure.consumer.AbstractKafkaConsumer;
 
@@ -21,8 +22,14 @@ import java.lang.annotation.Target;
 public @interface KafkaConsumer {
 
     /**
+     * @return название компонента
+     */
+    @AliasFor(attribute = "value", annotation = Component.class)
+    String value() default "";
+
+    /**
      * @return название конфигурации для данного потребителя
      */
-    String value();
+    String config();
 
 }

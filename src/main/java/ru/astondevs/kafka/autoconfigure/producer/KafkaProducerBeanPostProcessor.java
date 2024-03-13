@@ -11,7 +11,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.lang.NonNull;
 import ru.astondevs.kafka.autoconfigure.KafkaConfigurationProperties;
-import ru.astondevs.kafka.autoconfigure.annotation.KafkaProducer;
 
 /**
  * Пост процессор компонента, который связывает продюсера с соответствующим KafkaTemplate.
@@ -37,8 +36,8 @@ public class KafkaProducerBeanPostProcessor implements BeanPostProcessor {
 
     @Override
     public Object postProcessBeforeInitialization(@NonNull Object bean, @NonNull String beanName) throws BeansException {
-        KafkaProducer annotation = beanFactory.findAnnotationOnBean(beanName, KafkaProducer.class);
-        if (annotation == null) {
+        KafkaProducer kafkaProducer = beanFactory.findAnnotationOnBean(beanName, KafkaProducer.class);
+        if (kafkaProducer == null) {
             return bean;
         }
 
@@ -46,7 +45,8 @@ public class KafkaProducerBeanPostProcessor implements BeanPostProcessor {
             throw new BeanNotOfRequiredTypeException(beanName, AbstractKafkaProducer.class, bean.getClass());
         }
 
-        KafkaConfigurationProperties.ProducerProperties properties = this.properties.getProducers().get(annotation.value());
+        String configName = kafkaProducer.config();
+        KafkaConfigurationProperties.ProducerProperties properties = this.properties.getProducers().get(configName);
         if (properties == null) {
             throw new IllegalArgumentException("Producer's properties is null");
         }

@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import ru.astondevs.kafka.autoconfigure.annotation.KafkaConsumer;
-import ru.astondevs.kafka.autoconfigure.annotation.KafkaProducer;
+import ru.astondevs.kafka.autoconfigure.consumer.KafkaConsumer;
+import ru.astondevs.kafka.autoconfigure.producer.KafkaProducer;
 import ru.astondevs.kafka.autoconfigure.consumer.KafkaConsumerBeanPostProcessor;
 import ru.astondevs.kafka.autoconfigure.producer.KafkaProducerBeanPostProcessor;
 
